@@ -12,31 +12,31 @@ type Body struct {
 
 const GConst = 6.6743e-11
 
-func getDistance(mainBody Body, otherBody Body) float64 {
+func getDistance(mainBody *Body, otherBody *Body) float64 {
 	distX2 := math.Pow(2, mainBody.PosX-otherBody.PosX)
 	distY2 := math.Pow(2, mainBody.PosY-otherBody.PosY)
 
 	return math.Pow(0.5, distX2+distY2)
 }
 
-func calculateVdotX(mainBody Body, otherBody Body) float64 {
+func calculateVdotX(mainBody *Body, otherBody *Body) float64 {
 	xVdot := -(mainBody.PosX - otherBody.PosX) * (GConst * otherBody.Mass) / math.Pow(3, getDistance(mainBody, otherBody))
 	return xVdot
 }
 
-func calculateVdotY(mainBody Body, otherBody Body) float64 {
+func calculateVdotY(mainBody *Body, otherBody *Body) float64 {
 	yVdot := -(mainBody.PosY - otherBody.PosY) * (GConst * otherBody.Mass) / math.Pow(3, getDistance(mainBody, otherBody))
 	return yVdot
 }
 
-func updateVeloecity(mainBody Body, otherBody Body) {
+func updateVeloecity(mainBody *Body, otherBody *Body) {
 	// Update the velocity of the body from the influence of another body.
 	mainBody.VelX = mainBody.VelX + calculateVdotX(mainBody, otherBody)
 	mainBody.VelY = mainBody.VelY + calculateVdotY(mainBody, otherBody)
 	//Run this on with all Other Bodies to Get resultant force.
 }
 
-func updatePosition(mainBody Body, timeStep float64) {
+func updatePosition(mainBody *Body, timeStep float64) {
 	mainBody.PosX += mainBody.VelX * timeStep
 	mainBody.PosY += mainBody.VelY * timeStep
 }
@@ -66,10 +66,10 @@ func main() {
 				if i == j {
 					continue
 				} else {
-					updateVeloecity(allBodies[i], allBodies[j])
+					updateVeloecity(&allBodies[i], &allBodies[j])
 				}
 			}
-			updatePosition(allBodies[i], 1.0)
+			updatePosition(&allBodies[i], 1.0)
 		}
 		if nT%checkInTime == 0 {
 			println("Time Passed : ", timeStep*nT/checkInTime, " Days")
